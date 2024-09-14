@@ -1,1 +1,7 @@
 env/
+# Ignorar archivos de sistema de Windows
+Thumbs.db
+Desktop.ini
+
+# Ignorar archivos de sistema de Linux
+*~
