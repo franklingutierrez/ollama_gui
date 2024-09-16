@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, jsonify
 import requests
 import logging
 import json
+import markdown
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -38,7 +39,6 @@ def chat():
         }, timeout=30)
         response.raise_for_status()
 
-        # Procesar la respuesta línea por línea
         ollama_response = ""
         for line in response.iter_lines():
             if line:
@@ -49,8 +49,11 @@ def chat():
                 except json.JSONDecodeError:
                     logging.error(f"Error al decodificar JSON: {line}")
 
-        logging.debug(f"Respuesta de Ollama: {ollama_response}")
-        return jsonify({'response': ollama_response})
+        # Convertir Markdown a HTML
+        html_response = markdown.markdown(ollama_response)
+
+        logging.debug(f"Respuesta de Ollama (HTML): {html_response}")
+        return jsonify({'response': html_response})
     except requests.exceptions.RequestException as e:
         logging.error(f"Error al comunicarse con Ollama: {e}")
         return jsonify({'error': str(e)}), 500
