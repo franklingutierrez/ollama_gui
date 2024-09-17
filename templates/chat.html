@@ -45,6 +45,8 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            white-space: pre-wrap;
+            /* Para manejar saltos de línea y espacios */
         }
 
         .message {
@@ -63,6 +65,46 @@
             align-self: flex-start;
             background-color: #e6d8b5;
             font-family: 'Georgia', serif;
+        }
+
+        .ollama-message h1,
+        .ollama-message h2,
+        .ollama-message h3 {
+            font-weight: bold;
+            /* Negrita para títulos y subtítulos */
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #8b4513;
+        }
+
+        .ollama-message ul,
+        .ollama-message ol {
+            margin-left: 20px;
+        }
+
+        .ollama-message code {
+            background-color: #d9c8a9;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .ollama-message pre {
+            background-color: #d9c8a9;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .ollama-message a {
+            color: #8b4513;
+            text-decoration: underline;
+        }
+
+        .ollama-message blockquote {
+            border-left: 3px solid #8b4513;
+            margin-left: 0;
+            padding-left: 10px;
+            color: #666;
         }
 
         #input-area {
@@ -128,50 +170,6 @@
         .typing-indicator span:nth-of-type(3) {
             animation: 1s blink infinite 0.9999s;
         }
-
-        @keyframes blink {
-            50% {
-                opacity: 1;
-            }
-        }
-
-        .ollama-message h1,
-        .ollama-message h2,
-        .ollama-message h3 {
-            margin-top: 10px;
-            margin-bottom: 5px;
-            color: #8b4513;
-        }
-
-        .ollama-message ul,
-        .ollama-message ol {
-            margin-left: 20px;
-        }
-
-        .ollama-message code {
-            background-color: #d9c8a9;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-
-        .ollama-message pre {
-            background-color: #d9c8a9;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-
-        .ollama-message a {
-            color: #8b4513;
-            text-decoration: underline;
-        }
-
-        .ollama-message blockquote {
-            border-left: 3px solid #8b4513;
-            margin-left: 0;
-            padding-left: 10px;
-            color: #666;
-        }
     </style>
 </head>
 
@@ -190,10 +188,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             console.log('DOM fully loaded and parsed');
-
             const sendButton = document.getElementById('send-button');
             const userInput = document.getElementById('user-input');
-
             sendButton.addEventListener('click', sendMessage);
             userInput.addEventListener('keypress', function (event) {
                 if (event.key === 'Enter') {
@@ -208,12 +204,9 @@
             const input = document.getElementById('user-input');
             const message = input.value;
             if (!message.trim()) return;
-
             input.value = '';
-
             displayMessage('user', message);
             showTypingIndicator();
-
             axios.post('/chat', { message: message })
                 .then(function (response) {
                     console.log('Response received:', response.data);

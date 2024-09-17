@@ -5,6 +5,9 @@ import requests
 import logging
 import json
 import markdown
+from markdown.extensions.extra import ExtraExtension
+from markdown.extensions.admonition import AdmonitionExtension
+from markdown.extensions.codehilite import CodeHiliteExtension
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -49,8 +52,17 @@ def chat():
                 except json.JSONDecodeError:
                     logging.error(f"Error al decodificar JSON: {line}")
 
-        # Convertir Markdown a HTML
-        html_response = markdown.markdown(ollama_response)
+        # Remove multiple newlines
+        ollama_response = '\n'.join(
+            [line for line in ollama_response.split('\n') if line.strip() != ''])
+
+        # Convertir Markdown a HTML con extensiones añadidas
+        md_extensions = [ExtraExtension(), AdmonitionExtension(),
+                         CodeHiliteExtension()]
+        # Reemplazar ": " por ":\n" para manejo de saltos de línea después de 2 puntos
+        ollama_response = ollama_response.replace(': ', ':\n')
+        html_response = markdown.markdown(
+            ollama_response, extensions=md_extensions)
 
         logging.debug(f"Respuesta de Ollama (HTML): {html_response}")
         return jsonify({'response': html_response})
